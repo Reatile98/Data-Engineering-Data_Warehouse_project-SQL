@@ -27,7 +27,47 @@ The Gold layer consists of three primary views:
 *   **`gold.dim_products`**: Contains current product information. Filters out historical records (`WHERE prd_end_dt IS NULL`) and joins product categories.
 *   **`gold.fact_sales`**: The central fact table connecting sales transactions to the customer and product dimensions using surrogate keys, allowing for robust slicing and dicing of sales metrics (amount, quantity, price).
 
-**[INSERT STAR SCHEMA DIAGRAM IMAGE HERE - You can use a tool like Draw.io or Mermaid.js to make this]**
+**erDiagram
+    dim_customers {
+        int customer_key PK "Surrogate Key"
+        int customer_id
+        string customer_number
+        string first_name
+        string last_name
+        string country
+        string marital_status
+        string gender
+        date birthdate
+        date create_date
+    }
+
+    dim_products {
+        int product_key PK "Surrogate Key"
+        int product_id
+        string product_number
+        string product_name
+        string category_id
+        string subcategory
+        string maintenance
+        int cost
+        string product_line
+        date start_date
+    }
+
+    fact_sales {
+        string order_number
+        int product_key FK
+        int customer_key FK
+        date order_date
+        date shipping_date
+        date due_date
+        int sales_amount
+        int quantity
+        int sales_price
+    }
+
+    dim_customers ||--o{ fact_sales : "customer_key links to"
+    dim_products ||--o{ fact_sales : "product_key links to"**
 
 ## 🛠️ Technologies Used
 *   **Language:** SQL
