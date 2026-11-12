@@ -37,3 +37,493 @@ CREATE DATABASE IF NOT EXISTS Gold;
  SHOW DATABASES;
  
  -- ==================================================================================
+
+                -- CREATING TABLES FOR THE BRONZE LAYER--
+/*==================================================================================================================
+This script creates tables for the Bronze layer. The tables are created in relation to the crm and erp data sources 
+that contains the data that is going to be inserted into our bronze layer. Note that when creating the tablefirstly
+it is dropped if it exists. this is to replace any existing similar table. this is only done at this stage in which
+the ables are empty.At the later stage tables will only be altered to avoid losing vital information.
+=====================================================================================================================
+*/
+--                    CRM FILE SOURCE
+DROP TABLE IF EXISTS bronze.crm_cust_info;
+create table bronze.crm_cust_info (
+cst_id int,
+cst_key varchar(50),
+cst_firstname varchar(50),
+cst_lastname varchar(50),
+cst_marital_status varchar(50),
+cst_gndr varchar(50),
+cst_create_date DATE
+);
+
+DROP TABLE IF EXISTS bronze.crm_prd_info;
+create table bronze.crm_prd_info (
+prd_id INT,
+prd_key VARCHAR(50),
+prd_nm VARCHAR(50),
+prd_cost INT,
+prd_line VARCHAR(50),
+prd_start_dt DATE,
+prd_end_dt DATE
+);
+
+DROP TABLE IF EXISTS bronze.crm_sales_details;
+create table bronze.crm_sales_details (
+sls_ord_num VARCHAR(50),
+sls_prd_key VARCHAR(50),
+sls_cust_id INT,
+sls_order_dt INT,
+sls_ship_dt INT,
+sls_due_dt INT,
+sls_sales INT,
+sls_quantity INT,
+sls_price INT
+);
+-- ERP FILE SOURCE
+DROP TABLE IF EXISTS bronze.erp_cust_az12;
+create table bronze.erp_cust_az12 (
+CID VARCHAR(50),
+BDATE DATE,
+GEN VARCHAR(50)
+);
+
+DROP TABLE IF EXISTS bronze.erp_loc_a101;
+create table bronze.erp_loc_a101 (
+CID VARCHAR(50),
+CNTRY VARCHAR(50)
+);
+
+DROP TABLE IF EXISTS bronze.erp_px_cat_g1v2;
+create table bronze.erp_px_cat_g1v2 (
+ID VARCHAR(50),
+CAT VARCHAR(50),
+SUBCAT VARCHAR(50),
+MAINTENANCE VARCHAR(50)
+);
+DROP TABLE IF EXISTS bronze.epr_loca101;
+
+-- ===============================================================================================
+
+                         -- INSERTING DATA INTO THE TABLES
+-- ==================================================================================================
+/* This scrips inserts data into the bronze layer tables. The source data is loaded without 
+any transformations because this is the raw data layer and it i obtained as a CSV file from my uploads
+directory. By TRUNCATING the table we are insuring that there is no data in before loading it then
+the first raw is ignored because it had been included as the table heading when creating tables.
+*/
+-- ==================================================================================================
+    
+                          -- LOADING DATA INTO CUST_INFO TABLE
+    
+TRUNCATE TABLE bronze.crm_cust_info;
+
+LOAD DATA LOCAL INFILE 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\cust_info.csv'
+INTO TABLE bronze.crm_cust_info
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+SELECT COUNT(*) AS rows_in_sales
+FROM bronze.crm_cust_info;
+
+          -- LOADING DATA INTO PRD_INFO TABLE
+
+TRUNCATE TABLE bronze.crm_prd_info;
+
+LOAD DATA LOCAL INFILE 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\prd_info.csv'
+INTO TABLE bronze.crm_prd_info
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+SELECT COUNT(*) AS rows_in_sales
+FROM bronze.crm_prd_info;
+
+             -- LOADING DATA INTO SALES_DETAILS TABLE
+
+TRUNCATE TABLE bronze.crm_sales_details;
+
+LOAD DATA LOCAL INFILE 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\sales_deails.csv'
+INTO TABLE bronze.crm_sales_details
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+SELECT COUNT(*) AS rows_in_sales
+FROM bronze.crm_sales_details;
+
+               -- LOADING DATA INTO CUST_AZ12 TABLE
+
+TRUNCATE TABLE bronze.erp_cust_az12;
+
+LOAD DATA LOCAL INFILE 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\cust_az12.csv'
+INTO TABLE bronze.erp_cust_az12
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+SELECT COUNT(*) AS rows_in_sales
+FROM bronze.erp_cust_az12;
+
+               -- LOADING DATA INTO LOC_A101 TABLE
+
+TRUNCATE TABLE bronze.erp_loc_a101;
+
+LOAD DATA LOCAL INFILE 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\loc_a101.csv'
+INTO TABLE bronze.erp_loc_a101
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+SELECT COUNT(*) AS rows_in_sales
+FROM bronze.erp_loc_a101;
+
+                    -- LOADING DATA INTO PX_CAT_G1V2 TABLE
+
+TRUNCATE TABLE bronze.erp_px_cat_g1v2;
+
+LOAD DATA LOCAL INFILE 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\px_cat_g1v2.csv'
+INTO TABLE bronze.crm_cust_info
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+SELECT COUNT(*) AS rows_in_sales
+FROM bronze.erp_px_cat_g1v2;
+
+-- ==================================================================================================
+/*NOTE: DUE TO COPLICATIONS WITH MYSQL WORKBENCH I HAD TO USE THE TABLE DATA IMPORT WIZARD */
+-- ==================================================================================================
+
+                        -- CREATING SILVER LAYER TABLES
+-- ========================================================================================
+/* This scrips creates and sets up the tables for the silver layer. Note that at this stage 
+when creating tables they are created using LIKE which makes then exactly like the bronze 
+layer tables. They are then altered to create records of of when a row was created in our 
+data warehouse.*/
+-- ========================================================================================
+
+CREATE TABLE silver.crm_cust_info
+LIKE bronze.crm_cust_info;
+
+CREATE TABLE silver.crm_prd_info
+LIKE bronze.crm_prd_info;
+
+CREATE TABLE silver.crm_sales_details
+LIKE bronze.crm_sales_details;
+
+-- ALTERING THE TABLES
+
+ALTER TABLE silver.crm_cust_info
+ADD COLUMN dwh_create_date DATETIME
+DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE silver.crm_prd_info
+ADD COLUMN dwh_create_date DATETIME
+DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE silver.crm_sales_details
+ADD COLUMN dwh_create_date DATETIME
+DEFAULT CURRENT_TIMESTAMP;
+
+-------------
+CREATE TABLE silver.erp_cust_az12
+LIKE bronze.erp_cust_az12;
+
+CREATE TABLE silver.erp_loc_a101
+LIKE bronze.erp_loc_a101;
+
+CREATE TABLE silver.erp_px_cat_g1v2
+LIKE bronze.erp_px_cat_g1v2;
+
+-- ALTERING TABLES
+
+ALTER TABLE silver.erp_cust_az12
+ADD COLUMN dwh_create_date DATETIME
+DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE silver.erp_loc_a101
+ADD COLUMN dwh_create_date DATETIME
+DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE silver.erp_px_cat_g1v2
+ADD COLUMN dwh_create_date DATETIME
+DEFAULT CURRENT_TIMESTAMP;
+
+-- =========================================================================================
+
+ --                  SILVER LAYER DATA TRANSFORMATION AND INSERTING
+ -- =================================================================================================
+/* This script focuses heavily  on data analytics. What it does is data transformaton. it 
+undertakes data cleaning procedures such as data normalization, data standardisation and 
+assuring data consistency.  After data has been transformed the script inserts it in the silver
+layer.*/
+-- ====================================================================================================
+--                    TRANSFORMING AND INSERTING CRM_CUST_INFO
+-- ====================================================================================================
+insert into silver.crm_cust_info(
+cst_id,
+cst_key,
+cst_firstname,
+cst_lastname,
+cst_marital_status,
+cst_gndr,
+cst_create_date)
+select
+cst_id,
+cst_key,
+TRIM(cst_firstname) as cst_firstname,
+TRIM(cst_lastname) as cst_lastname,
+case when upper(TRIM(cst_marital_status)) = 'S' THEN 'Single'
+	when upper(TRIM(cst_marital_status)) = 'M' then 'Married'
+    else 'n/a'
+end cst_marital_status,
+case when upper(TRIM(cst_gndr)) = 'F' THEN 'Female'
+	when upper(TRIM(cst_gndr)) = 'M' then 'Male'
+    else 'n/a'
+end cst_gndr,
+cst_create_date
+from (
+select *,
+row_number() over(partition by cst_id order by cst_create_date DESC)
+ AS flag_last
+from bronze.crm_cust_info
+WHERE cst_id IS NOT NULL)
+as t where flag_last = 1 ;
+
+-- ======================================================================================================
+--                    TRANSFORMING AND INSERTING CRM_PRD_INFO
+-- ======================================================================================================
+alter table silver.crm_prd_info
+	add column cat_id varchar(50) after prd_id,
+    modify column prd_start_dt date,
+    modify column prd_end_dt date;
+
+insert into silver.crm_prd_info(
+prd_id,
+cat_id,
+prd_key,
+prd_nm,
+prd_cost,
+prd_line,
+prd_start_dt,
+prd_end_dt
+)
+select 
+prd_id,
+replace(substring(prd_key,1,5),'-','_') as cat_id,
+substring(prd_key, 7, length(prd_key)) as prd_key,
+prd_nm,
+ifnull(prd_cost, 0) as prd_cost,
+case upper(trim(prd_line))
+	when 'M' then 'Mountain'
+    when 'R' then 'Road'
+    when 'S' then 'Other Sales'
+    when 'T' then 'Touring'
+    else 'N/A'
+end as prd_line,
+cast(prd_start_dt as date) as prd_start_dt,
+cast(lead(prd_end_dt) over (partition by prd_key order by prd_start_dt) -1 as date) as prd_end_dt
+FROM bronze.crm_prd_info;
+
+select *
+from silver.crm_prd_info;
+
+-- ======================================================================================================
+--                    TRANSFORMING AND INSERTING CRM_SALES_DEAILS
+-- =======================================================================================================
+alter table silver.crm_sales_details
+	modify column sls_order_dt date,
+    modify column sls_ship_dt date,
+    modify column sls_due_dt date;
+insert into silver.crm_sales_details(
+sls_ord_num,
+sls_prd_key,
+sls_cust_id,
+sls_order_dt,
+sls_ship_dt,
+sls_due_dt,
+sls_sales,
+sls_quantity,
+sls_price
+)
+select
+sls_ord_num,
+sls_prd_key,
+sls_cust_id,
+case when sls_order_dt = 0 or length(sls_order_dt) !=8 then null
+else str_to_date(cast(sls_order_dt as char),'%Y%m%d')
+end as sls_order_dt,
+case when sls_ship_dt = 0 or length(sls_ship_dt) !=8 then null
+else str_to_date(cast(sls_ship_dt as char),'%Y%m%d')
+end as sls_ship_dt,
+case when sls_due_dt = 0 or length(sls_due_dt) !=8 then null
+else str_to_date(cast(sls_due_dt as char),'%Y%m%d')
+end as sls_due_dt,	
+case  when sls_sales is null 
+	or sls_sales < 0 
+    or sls_sales != sls_quantity * abs(sls_price) 
+    then sls_quantity * abs(sls_price)
+    else sls_sales
+end as sls_sales, 
+sls_quantity,
+case when sls_price is null or sls_price = 0
+	then sls_sales / nullif(sls_quantity, 0)
+    else sls_price
+end as sls_price    
+from bronze.crm_sales_details;
+
+select *
+from silver.crm_sales_details;
+
+-- =========================================================================================================
+--                    TRANSFORMING AND INSERTING EPR_CUST_AZ12
+-- =========================================================================================================
+
+insert into silver.erp_cust_az12 (CID,BDATE,GEN)
+select
+case when CID like 'NAS%' then substring(CID,4, length(CID))
+	else CID
+END AS CID,
+case when BDATE > current_date() then null
+	else BDATE
+end as BDATE,
+case when upper(trim(GEN)) in ('F', 'FEMALE') then 'female'
+	when upper(trim(GEN)) in ('M', 'MALE') then 'male'
+	else 'n/a'
+end as GEN
+from bronze.erp_cust_az12;
+select*from silver.erp_cust_az12;
+-- =============================================================================================
+--                    TRANSFORMING AND INSERTING EPR_LOC_A101
+-- =============================================================================================
+
+insert into silver.erp_loc_a101(CID,CNTRY)
+select
+replace(CID, '-', '') as CID,
+case when trim(CNTRY) = 'DE' then 'Germany'
+	when trim(CNTRY) in ('US','USA') then 'United States'
+    when trim(CNTRY) = '' or CNTRY is null then 'n/a'
+    else trim(CNTRY)
+end as CNTRY
+from bronze.erp_loc_a101;
+
+select*FROM silver.erp_loc_a101;
+
+-- ================================================================================================
+--                    TRANSFORMING AND INSERTING EPR_PX_CAT_G1V2
+-- ================================================================================================
+insert into silver.erp_px_cat_g1v2(
+ID, CAT,SUBCAT,MAINTENANCE)
+select
+ID,
+CAT,
+SUBCAT,
+MAINTENANCE
+from bronze.erp_px_cat_g1v2;
+select* from silver.erp_px_cat_g1v2;
+
+-- ==================================================================================================
+
+--                      DATA MODELLING GOLD LAYER 
+-- ========================================================================================================================
+/*This script focuses on data modelling and analytical data structuring. Its primary purpose is to transform
+ the cleaned data stored in the Silver layer into datasets ready for business analytics using a dimensional modelling approach. 
+ It creates two dimension views, namely dim_customers and dim_products, which contain descriptive information 
+ about customers and products respectively. It also creates a central fact view, fact_sales, which contains measurable
+ sales information and connects the dimensions using surrogate keys. The script applies techniques such as surrogate
+ key generation, data integration through table joins, and filtering to ensure that only relevant product records are
+ included. The resulting Gold layer follows a Star Schema structure, making the data easier to query and analyse for 
+ business intelligence, reporting and dashboard development.
+*/
+-- ==========================================================================================================================
+
+--                               CREATING CUSTOMER DIMENSIONS VIEW 
+
+create or replace view gold.dim_customers as 
+select
+	row_number() over (order by ci.cst_id) as customer_key,
+    ci.cst_id as customer_id,
+    ci.cst_key as customer_number,
+    ci.cst_firstname as first_name,
+    ci.cst_lastname as last_name,
+    la.cntry as country,
+    ci.cst_marital_status as marital_status,
+    
+    case when ci.cst_gndr is not null
+				and ci.cst_gndr <> 'n/a'
+		 then ci.cst_gndr
+         else coalesce(ca.gen, 'n/a')
+	end as gender,
+    ca.bdate as birthdate,
+    ci.cst_create_date as create_date
+    
+    from silver.crm_cust_info as ci
+    left join silver.erp_cust_az12 as ca
+    on ci.cst_key = ca.cid
+    
+    left join silver.erp_loc_a101 as la
+    on ci.cst_key = la.cid;
+   
+   select*from gold.dim_customers
+   limit 10;
+   -- ==============================================================================================
+   
+   
+--                               CREATING PRODUCTS DIMENSIONS VIEW 
+
+create or replace view gold.dim_products as
+select
+	row_number() over(
+		order by pn.prd_start_dt,pn.prd_key)
+	as product_key,
+    
+    pn.prd_id as product_id,
+    pn.prd_key as product_number,
+    pn.prd_nm as product_name,
+    pn.cat_id as category_id,
+    pc.cat as subcategory,
+    pc.maintenance as maintenence,
+    pn.prd_cost as cost,
+    pn.prd_line as product_line,
+    pn.prd_start_dt as start_date
+    
+from silver.crm_prd_info pn
+left join silver.erp_px_cat_g1v2 pc
+	on pn.cat_id = pc.ID
+where pn.prd_end_dt is null;
+
+select*from gold.dim_products
+   limit 10;
+-- ========================================================================================
+
+--                               CREATING FACT SALES VIEW 
+
+create or replace view gold.fact_sales as
+select
+sd.sls_ord_num as order_number,
+pr.product_key,
+cu.customer_key,
+sd.sls_order_dt as order_date,
+sd.sls_ship_dt as shopping_date,
+sd.sls_due_dt as due_date,
+sd.sls_sales as sales_amount,
+sd.sls_quantity as quantity,
+sd.sls_price as sales_price
+from silver.crm_sales_details sd
+left join gold.dim_products pr
+on sd.sls_prd_key = pr.product_number
+left join gold.dim_customers cu
+on sd.sls_cust_id = cu.customer_id;
+
+select*from gold.fact_sales
+limit  10;
+
