@@ -1,1 +1,39 @@
 
+                   -- DATAWAREHOUSE PROJECT---
+/*=====================================================================================
+                    CREATING DATABASES AND SCHEMAS
+*SCRIPT PURPOSE*
+This script creates a new database while also checking if it already exists. 
+If the database exists it is dropped and a new one is created in its place. 
+When creating the database the scrips sets up three schemas in which our data 
+is stored, namely “Bronze”, “Silver” and “Gold” layers.
+
+WARNING
+
+Running this scrip will drop the entire DATABASE if it already exists. 
+All data in the database will be permanently deleted. 
+Proceed with caution and ensure that you have proper backup before running this script. 
+*/-- ===================================================================================
+CREATE DATABASE IF NOT EXISTS  Bronze;
+CREATE DATABASE IF NOT EXISTS Silver;
+CREATE DATABASE IF NOT EXISTS Gold;
+                     -- SETTING CHARACTER ENCODING--
+ /*By Altering database it
+ ensures that DATABASE can properly handle charters like names, 
+ symbols and different languages. */    
+ ALTER DATABASE Bronze
+ CHARACTER SET utf8mb4
+ COLLATE utf8mb4_unicode_ci;
+ 
+  ALTER DATABASE silver
+ CHARACTER SET utf8mb4
+ COLLATE utf8mb4_unicode_ci;
+ 
+  ALTER DATABASE gold
+ CHARACTER SET utf8mb4
+ COLLATE utf8mb4_unicode_ci;
+ 
+ -- checking if it has worked--
+ SHOW DATABASES;
+ 
+ -- ==================================================================================
