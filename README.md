@@ -81,28 +81,16 @@ flowchart TD
 ```
  
 
-## 🏗️ Architecture (Medallion)
-The project is structured into three distinct layers:
+## The Project Layers Roles:
 
 1.  **🥉 Bronze Layer (Raw Data):** Stores raw data ingested from source systems with minimal transformation.
 2.  **🥈 Silver Layer (Cleaned Data):** Responsible for data cleaning, standardization, and integration. (e.g., removing hyphens from customer IDs, standardizing country names like 'DE' to 'Germany', and handling NULLs).
-3.  **🥇 Gold Layer (Business Ready):** Contains the dimensional model, organized into a Star Schema consisting of Dimensions and Facts.
-
-## 📊 Data Model (Gold Layer)
-The Gold layer consists of three primary views:
-
-*   **`gold.dim_customers`**: Integrates CRM and ERP customer data. Generates surrogate keys using `ROW_NUMBER()` and resolves conflicting gender data between systems.
-*   **`gold.dim_products`**: Contains current product information. Filters out historical records (`WHERE prd_end_dt IS NULL`) and joins product categories.
-*   **`gold.fact_sales`**: The central fact table connecting sales transactions to the customer and product dimensions using surrogate keys, allowing for robust slicing and dicing of sales metrics (amount, quantity, price).
-
-
-<img width="3033" height="3320" alt="deepseek_mermaid_20261112_0ce80b" src="https://github.com/user-attachments/assets/c0d0d124-a5e2-4eef-a312-d0a8dc5ec3a6" />
-
+3.  **🥇 Gold Layer (Business Consumption Ready):** Contains the dimensional model, organized into a Star Schema consisting of Dimensions and Facts.
 
 
 ## 📊 Data Model (Gold Layer)
 
-The Gold Layer represents the final stage of the Medallion Architecture, where cleaned and integrated data from the Silver Layer is transformed into business-ready analytical datasets.
+The Gold Layer represents the final stage of the Medallion Architecture, where cleaned and integrated data from the Silver Layer is transformed into analytical datasets red for business use.
 
 It consists of three primary SQL views designed using **Dimensional Modelling** and organised into a **Star Schema**.
 
