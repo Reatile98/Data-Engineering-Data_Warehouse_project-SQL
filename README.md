@@ -1,4 +1,4 @@
-<img width="300" height="131" alt="deepseek_mermaid_20261113_7607a3" src="https://github.com/user-attachments/assets/cacc2755-d2cd-4131-8252-85996cac0054" /># Data-Warehouse-project
+ /># Data-Warehouse-project
 Building a data warehouse with My SQL Workbench, including ETL process, data modelling and analytics.
 # SQL Data Warehouse Project 🏗️
 
