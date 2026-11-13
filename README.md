@@ -12,7 +12,9 @@ This project demonstrates the design and implementation of a modern data warehou
 *   **Data Modeling:** Implement a dimensional **Star Schema** in the Gold layer for analytical reporting.
 *   **Business Value:** Create business-ready fact and dimension views to answer key questions like "Which products generate the highest revenue?" and "Which countries have the highest sales?"
 
-The project follows the **Medallion Architecture** (Bronze, Silver, Gold) to ensure data quality, consistency, and business readiness.
+## 🏗️ Architecture & Data Flow
+
+The project follows the **Medallion Architecture (Bronze, Silver, Gold)** to ensure data quality, consistency, and business readiness.
 
 
 ## End-to-End Data Architecture
@@ -77,13 +79,7 @@ flowchart TD
     style GOLD fill:#B68B24,color:#fff,stroke:#B68B24
     style BI fill:#267A50,color:#fff,stroke:#267A50
 ```
-
-
-
-## 🏗️ Architecture & Data Flow
-
-The project follows the **Medallion Architecture (Bronze, Silver, Gold)** to ensure data quality, consistency, and business readiness. 
-
+ 
 
 ## 🏗️ Architecture (Medallion)
 The project is structured into three distinct layers:
