@@ -7,6 +7,73 @@ This project demonstrates the design and implementation of a modern data warehou
 
 The project follows the **Medallion Architecture** (Bronze, Silver, Gold) to ensure data quality, consistency, and business readiness.
 
+## 🏗️ Architecture & Data Flow
+
+The project follows the **Medallion Architecture (Bronze, Silver, Gold)** to ensure data quality, consistency, and business readiness. 
+
+```mermaid
+flowchart LR
+    %% Source Systems
+    subgraph Sources ["📥 Source Systems"]
+        CRM[CRM Systems\n(Customer & Sales Data)]
+        ERP[ERP Systems\n(Customer, Location & Category Data)]
+    end
+
+    %% Bronze Layer
+    subgraph Bronze ["🥉 Bronze Layer (Raw Data)"]
+        B_CRM[(bronze.crm_*)]
+        B_ERP[(bronze.erp_*)]
+    end
+
+    %% Silver Layer
+    subgraph Silver ["🥈 Silver Layer (Cleaned & Standardized)"]
+        S_CUST[silver.crm_cust_info]
+        S_SALES[silver.crm_sales_details]
+        S_PROD[silver.crm_prd_info]
+        S_ERP_CUST[silver.erp_cust_az12]
+        S_ERP_LOC[silver.erp_loc_a101]
+        S_ERP_CAT[silver.erp_px_cat_g1v2]
+    end
+
+    %% Gold Layer
+    subgraph Gold ["🥇 Gold Layer (Business Ready)"]
+        G_DIM_C[gold.dim_customers]
+        G_DIM_P[gold.dim_products]
+        G_FACT[gold.fact_sales]
+    end
+
+    %% Connections
+    CRM --> B_CRM
+    ERP --> B_ERP
+
+    B_CRM -->|Clean & Standardize| S_CUST
+    B_CRM -->|Clean & Standardize| S_SALES
+    B_CRM -->|Clean & Standardize| S_PROD
+    
+    B_ERP -->|Standardize Country & Gender| S_ERP_CUST
+    B_ERP -->|Standardize Location| S_ERP_LOC
+    B_ERP -->|Standardize Category| S_ERP_CAT
+
+    S_CUST -->|Join & Model| G_DIM_C
+    S_ERP_CUST -->|Join & Model| G_DIM_C
+    S_ERP_LOC -->|Join & Model| G_DIM_C
+
+    S_PROD -->|Join & Model| G_DIM_P
+    S_ERP_CAT -->|Join & Model| G_DIM_P
+
+    S_SALES -->|Fact Table Integration| G_FACT
+    G_DIM_C -->|Surrogate Keys| G_FACT
+    G_DIM_P -->|Surrogate Keys| G_FACT
+
+    %% Styling
+    classDef bronze fill:#cd7f32,stroke:#333,stroke-width:2px,color:#fff;
+    classDef silver fill:#c0c0c0,stroke:#333,stroke-width:2px,color:#000;
+    classDef gold fill:#ffd700,stroke:#333,stroke-width:2px,color:#000;
+    
+    class Bronze,B_CRM,B_ERP bronze;
+    class Silver,S_CUST,S_SALES,S_PROD,S_ERP_CUST,S_ERP_LOC,S_ERP_CAT silver;
+    class Gold,G_DIM_C,G_DIM_P,G_FACT gold;
+
 ## 🎯 Project Objectives
 *   **Data Ingestion:** Extract and load raw data from CRM and ERP systems into the Bronze layer.
 *   **Data Transformation:** Clean, standardize, and normalize data in the Silver layer (handling missing values, standardizing country codes, and resolving gender conflicts).
