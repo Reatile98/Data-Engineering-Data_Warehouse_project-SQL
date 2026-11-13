@@ -1,5 +1,4 @@
-Data-Warehouse-project
-Building a data warehouse with My SQL Workbench, including ETL process, data modelling and analytics.
+
 # SQL Data Warehouse Project 🏗️
 
 ## 📖 Project Overview
