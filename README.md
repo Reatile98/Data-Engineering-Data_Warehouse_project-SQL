@@ -98,6 +98,42 @@ The Gold layer consists of three primary views:
 
 <img width="3033" height="3320" alt="deepseek_mermaid_20261112_0ce80b" src="https://github.com/user-attachments/assets/c0d0d124-a5e2-4eef-a312-d0a8dc5ec3a6" />
 
+
+
+## 📊 Data Model (Gold Layer)
+
+The Gold Layer represents the final stage of the Medallion Architecture, where cleaned and integrated data from the Silver Layer is transformed into business-ready analytical datasets.
+
+It consists of three primary SQL views designed using **Dimensional Modelling** and organised into a **Star Schema**.
+
+### ⭐ Dimension Views
+
+- **`gold.dim_customers`**: Integrates customer information from CRM and ERP sources, combining customer attributes, demographic information, and location details. Generates a unique surrogate key (`customer_key`) using `ROW_NUMBER()` and applies business rules to resolve conflicting gender information between source systems.
+
+- **`gold.dim_products`**: Combines CRM product information with ERP product category data to create a comprehensive product dimension. Generates a unique surrogate key (`product_key`) and filters out historical product records using `WHERE prd_end_dt IS NULL`, ensuring that only currently active products are included.
+
+### 📈 Fact View
+
+- **`gold.fact_sales`**: Serves as the central fact view, containing sales transaction data sourced from the Silver Layer. It connects sales records to the customer and product dimensions through their respective surrogate keys (`customer_key` and `product_key`). It includes key transactional attributes such as order details, dates, sales amounts, quantities, and prices.
+
+### 🔗 Star Schema Design
+
+The Gold Layer follows a Star Schema design, with `fact_sales` at the centre, connected to `dim_customers` and `dim_products`.
+
+This structure separates measurable business events (sales transactions) from descriptive business entities (customers and products), making analytical queries more organised and easier to maintain.
+
+The resulting data model provides a business-ready foundation for:
+
+- Analysing sales performance across customers and products.
+- Aggregating sales amounts and quantities.
+- Exploring customer and product attributes.
+- Building Business Intelligence reports and dashboards.
+- Supporting data-driven business decisions.
+
+### 🗺️ Data Model Diagram
+
+![Gold Layer Star Schema](https://github.com/user-attachments/assets/c0d0d124-a5e2-4eef-a312-d0a8dc5ec3a6)
+
       
 ## 🛠️ Tech Stack & Tools
 
