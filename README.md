@@ -11,22 +11,21 @@ The project follows the **Medallion Architecture** (Bronze, Silver, Gold) to ens
 
 The project follows the **Medallion Architecture (Bronze, Silver, Gold)** to ensure data quality, consistency, and business readiness. 
 
-```mermaid
 flowchart LR
     %% Source Systems
     subgraph Sources ["📥 Source Systems"]
-        CRM[CRM Systems\n(Customer & Sales Data)]
-        ERP[ERP Systems\n(Customer, Location & Category Data)]
+        CRM[CRM Systems]
+        ERP[ERP Systems]
     end
 
     %% Bronze Layer
-    subgraph Bronze ["🥉 Bronze Layer (Raw Data)"]
-        B_CRM[(bronze.crm_*)]
-        B_ERP[(bronze.erp_*)]
+    subgraph Bronze ["🥉 Bronze Layer Raw Data"]
+        B_CRM[(bronze.crm)]
+        B_ERP[(bronze.erp)]
     end
 
     %% Silver Layer
-    subgraph Silver ["🥈 Silver Layer (Cleaned & Standardized)"]
+    subgraph Silver ["🥈 Silver Layer Cleaned Data"]
         S_CUST[silver.crm_cust_info]
         S_SALES[silver.crm_sales_details]
         S_PROD[silver.crm_prd_info]
@@ -36,7 +35,7 @@ flowchart LR
     end
 
     %% Gold Layer
-    subgraph Gold ["🥇 Gold Layer (Business Ready)"]
+    subgraph Gold ["🥇 Gold Layer Business Ready"]
         G_DIM_C[gold.dim_customers]
         G_DIM_P[gold.dim_products]
         G_FACT[gold.fact_sales]
@@ -46,22 +45,22 @@ flowchart LR
     CRM --> B_CRM
     ERP --> B_ERP
 
-    B_CRM -->|Clean & Standardize| S_CUST
-    B_CRM -->|Clean & Standardize| S_SALES
-    B_CRM -->|Clean & Standardize| S_PROD
+    B_CRM -->|Clean and Standardize| S_CUST
+    B_CRM -->|Clean and Standardize| S_SALES
+    B_CRM -->|Clean and Standardize| S_PROD
     
-    B_ERP -->|Standardize Country & Gender| S_ERP_CUST
+    B_ERP -->|Standardize Country and Gender| S_ERP_CUST
     B_ERP -->|Standardize Location| S_ERP_LOC
     B_ERP -->|Standardize Category| S_ERP_CAT
 
-    S_CUST -->|Join & Model| G_DIM_C
-    S_ERP_CUST -->|Join & Model| G_DIM_C
-    S_ERP_LOC -->|Join & Model| G_DIM_C
+    S_CUST -->|Join| G_DIM_C
+    S_ERP_CUST -->|Join| G_DIM_C
+    S_ERP_LOC -->|Join| G_DIM_C
 
-    S_PROD -->|Join & Model| G_DIM_P
-    S_ERP_CAT -->|Join & Model| G_DIM_P
+    S_PROD -->|Join| G_DIM_P
+    S_ERP_CAT -->|Join| G_DIM_P
 
-    S_SALES -->|Fact Table Integration| G_FACT
+    S_SALES -->|Fact Integration| G_FACT
     G_DIM_C -->|Surrogate Keys| G_FACT
     G_DIM_P -->|Surrogate Keys| G_FACT
 
