@@ -1,4 +1,4 @@
-# Data-Warehouse-project---SQL
+# Data-Warehouse-project
 Building a data warehouse with My SQL Workbench, including ETL process, data modelling and analytics.
 # SQL Data Warehouse Project 🏗️
 
@@ -34,8 +34,8 @@ The Gold layer consists of three primary views:
 
 ## 🛠️ Technologies Used
 *   **Language:** SQL
-*   **Database:** [Insert Database - e.g., MySQL]
-*   **IDE/Tool:** [Insert Tool - e.g., MySQL Workbench]
+*   **Database:** [ MySQL nch]
+*   **IDE/Tool:** [ MySQL Workbench]
 *   **Version Control:** Git & GitHub
 
 ## 📂 Project Structure
