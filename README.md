@@ -8,26 +8,69 @@ This project demonstrates the design and implementation of a modern data warehou
 The project follows the **Medallion Architecture** (Bronze, Silver, Gold) to ensure data quality, consistency, and business readiness.
 
 
-### Data Flow Architecture
+## End-to-End Data Architecture
 
-The project follows the Medallion Architecture, where data moves through three layers, with each stage improving its quality and usability.
+The following diagram illustrates the flow of data from CRM and ERP CSV source files through the Bronze, Silver and Gold layers, ultimately producing business-ready datasets for analytics and reporting.
 
 ```mermaid
 flowchart TD
-    A["CRM & ERP Source Data"] --> B["BRONZE LAYER<br/>Raw Data Ingestion"]
-    B --> C["SILVER LAYER<br/>Cleaning & Standardisation"]
-    C --> D["GOLD LAYER<br/>Dimensional Modelling"]
-    D --> E["Business Intelligence<br/>Analytics & Reporting"]
 
-    B --- B1["Raw source data"]
-    C --- C1["Cleaned and integrated data"]
-    D --- D1["dim_customers<br/>dim_products<br/>fact_sales"]
+    subgraph SOURCE["SOURCE DATA"]
+        CRM["CRM Folder<br/>CSV Files"]
+        ERP["ERP Folder<br/>CSV Files"]
+    end
 
-    style B fill:#8B572A,color:#fff,stroke:#8B572A
-    style C fill:#808080,color:#fff,stroke:#666
-    style D fill:#C49A32,color:#fff,stroke:#A47D20
-    style E fill:#267A50,color:#fff,stroke:#1D603E
+    subgraph BRONZE["BRONZE LAYER - RAW DATA"]
+        B1["Full Load Ingestion"]
+        B2["TRUNCATE Target Tables"]
+        B3["INSERT Raw CSV Data"]
+        B4[("Bronze Database Tables<br/>Raw CRM & ERP Data")]
+
+        B1 --> B2 --> B3 --> B4
+    end
+
+    subgraph SILVER["SILVER LAYER - CLEANED DATA"]
+        S1["Data Cleaning"]
+        S2["Standardisation & Normalisation"]
+        S3["Data Integration & Transformation"]
+        S4["Data Quality Checks"]
+        S5[("Silver Database Tables<br/>Cleaned & Integrated Data")]
+
+        S1 --> S2 --> S3 --> S4 --> S5
+    end
+
+    subgraph GOLD["GOLD LAYER - BUSINESS-READY DATA"]
+        G1["SQL Views & Transformations"]
+        G2["Dimensional Modelling"]
+        G3["dim_customers"]
+        G4["dim_products"]
+        G5["fact_sales"]
+        G6["Star Schema"]
+
+        G1 --> G2
+        G2 --> G3
+        G2 --> G4
+        G2 --> G5
+        G3 --> G6
+        G4 --> G6
+        G5 --> G6
+    end
+
+    BI["BUSINESS INTELLIGENCE<br/>Reporting & Analytics"]
+
+    CRM --> B1
+    ERP --> B1
+    B4 --> S1
+    S5 --> G1
+    G6 --> BI
+
+    style SOURCE fill:#2877B5,color:#fff,stroke:#2877B5
+    style BRONZE fill:#8B572A,color:#fff,stroke:#8B572A
+    style SILVER fill:#777777,color:#fff,stroke:#777777
+    style GOLD fill:#B68B24,color:#fff,stroke:#B68B24
+    style BI fill:#267A50,color:#fff,stroke:#267A50
 ```
+
 
 
 ## 🏗️ Architecture & Data Flow
