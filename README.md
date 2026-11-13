@@ -8,6 +8,27 @@ This project demonstrates the design and implementation of a modern data warehou
 The project follows the **Medallion Architecture** (Bronze, Silver, Gold) to ensure data quality, consistency, and business readiness.
 
 
+### Data Flow Architecture
+
+The project follows the Medallion Architecture, where data moves through three layers, with each stage improving its quality and usability.
+
+```mermaid
+flowchart TD
+    A["CRM & ERP Source Data"] --> B["BRONZE LAYER<br/>Raw Data Ingestion"]
+    B --> C["SILVER LAYER<br/>Cleaning & Standardisation"]
+    C --> D["GOLD LAYER<br/>Dimensional Modelling"]
+    D --> E["Business Intelligence<br/>Analytics & Reporting"]
+
+    B --- B1["Raw source data"]
+    C --- C1["Cleaned and integrated data"]
+    D --- D1["dim_customers<br/>dim_products<br/>fact_sales"]
+
+    style B fill:#8B572A,color:#fff,stroke:#8B572A
+    style C fill:#808080,color:#fff,stroke:#666
+    style D fill:#C49A32,color:#fff,stroke:#A47D20
+    style E fill:#267A50,color:#fff,stroke:#1D603E
+```
+
 
 ## 🏗️ Architecture & Data Flow
 
@@ -49,11 +70,7 @@ The Gold layer consists of three primary views:
 | **IDE / Tool** | ![MySQL Workbench](https://img.shields.io/badge/MySQL_Workbench-005C84?style=for-the-badge&logo=mysql&logoColor=white) |
 | **Version Control** | ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white) |
 
-## 🛠️ Technologies Used
-*   **Language:** SQL
-*   **Database:** [ MySQL nch]
-*   **IDE/Tool:** [ MySQL Workbench]
-*   **Version Control:** Git & GitHub
+
 
 ## 📂 Project Structure
 ```text
