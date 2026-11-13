@@ -144,3 +144,23 @@ The resulting data model provides a business-ready foundation for:
 │   ├── silver/                # Data cleaning and transformation scripts
 │   └── gold/                  # Data modeling (Views creation)
 └── README.md                  # Project documentation
+
+---
+
+## 🏃 Execution Order
+
+1. Run the database setup script.
+2. Create the Bronze tables.
+3. Load the source datasets into Bronze.
+4. Create the Silver tables.
+5. Run the Silver transformation scripts.
+6. Create the Gold analytical views.
+
+
+## 🚦 Project Status
+
+The data warehouse development and SQL implementation are documented in this repository. Further documentation and analytical reporting can be added as the project progresses.
+
+## 👩🏽‍💻 Author
+
+Created as a practical data warehousing and SQL learning project from data with Baraa Khatib Salkini.
