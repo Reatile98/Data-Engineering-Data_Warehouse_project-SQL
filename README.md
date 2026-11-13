@@ -5,6 +5,13 @@ Building a data warehouse with My SQL Workbench, including ETL process, data mod
 ## 📖 Project Overview
 This project demonstrates the design and implementation of a modern data warehouse using SQL. It focuses on building a structured data pipeline that extracts raw data from CRM and ERP source systems, transforms it into clean and integrated datasets, and models it for analytical purposes. 
 
+
+## 🎯 Project Objectives
+*   **Data Ingestion:** Extract and load raw data from CRM and ERP systems into the Bronze layer.
+*   **Data Transformation:** Clean, standardize, and normalize data in the Silver layer (handling missing values, standardizing country codes, and resolving gender conflicts).
+*   **Data Modeling:** Implement a dimensional **Star Schema** in the Gold layer for analytical reporting.
+*   **Business Value:** Create business-ready fact and dimension views to answer key questions like "Which products generate the highest revenue?" and "Which countries have the highest sales?"
+
 The project follows the **Medallion Architecture** (Bronze, Silver, Gold) to ensure data quality, consistency, and business readiness.
 
 
@@ -77,14 +84,6 @@ flowchart TD
 
 The project follows the **Medallion Architecture (Bronze, Silver, Gold)** to ensure data quality, consistency, and business readiness. 
 
-  
-
-
-## 🎯 Project Objectives
-*   **Data Ingestion:** Extract and load raw data from CRM and ERP systems into the Bronze layer.
-*   **Data Transformation:** Clean, standardize, and normalize data in the Silver layer (handling missing values, standardizing country codes, and resolving gender conflicts).
-*   **Data Modeling:** Implement a dimensional **Star Schema** in the Gold layer for analytical reporting.
-*   **Business Value:** Create business-ready fact and dimension views to answer key questions like "Which products generate the highest revenue?" and "Which countries have the highest sales?"
 
 ## 🏗️ Architecture (Medallion)
 The project is structured into three distinct layers:
