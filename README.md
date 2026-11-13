@@ -31,6 +31,14 @@ The Gold layer consists of three primary views:
 <img width="3033" height="3320" alt="deepseek_mermaid_20261112_0ce80b" src="https://github.com/user-attachments/assets/c0d0d124-a5e2-4eef-a312-d0a8dc5ec3a6" />
 
       
+## 🛠️ Tech Stack & Tools
+
+| Category | Technology |
+| :--- | :--- |
+| **Language** | ![SQL](https://img.shields.io/badge/SQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) |
+| **Database** | ![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white) |
+| **IDE / Tool** | ![MySQL Workbench](https://img.shields.io/badge/MySQL_Workbench-005C84?style=for-the-badge&logo=mysql&logoColor=white) |
+| **Version Control** | ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white) |
 
 ## 🛠️ Technologies Used
 *   **Language:** SQL
