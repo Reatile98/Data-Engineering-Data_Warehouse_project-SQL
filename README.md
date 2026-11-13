@@ -134,10 +134,13 @@ The resulting data model provides a business-ready foundation for:
 
 
 ## 📂 Project Structure
+
 ```text
-├── datasets/              # Raw source data (CSV files)
+├── datasets/                  # Raw source data (CSV files)
+│   ├── crm/                   # 3 CRM datasets (Customer Info, Product Info, Sales Details)
+│   └── erp/                   # 3 ERP datasets (Customer AZ12, Location A101, Category G1V2)
 ├── scripts/
-│   ├── bronze/            # DDL and ingestion scripts
-│   ├── silver/            # Data cleaning and transformation scripts
-│   └── gold/              # Data modeling (Views creation)
-└── README.md
+│   ├── bronze/                # DDL and ingestion scripts
+│   ├── silver/                # Data cleaning and transformation scripts
+│   └── gold/                  # Data modeling (Views creation)
+└── README.md                  # Project documentation
